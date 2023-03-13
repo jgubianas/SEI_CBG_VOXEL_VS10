@@ -24,6 +24,7 @@ Public Class SEI_SRV_VOXEL
 
         ' '' '' ''If Not ConectarSBO() Then
         ' '' '' ''    Me.DesconectarSQLNative()
+
         ' '' '' ''    Exit Sub
         ' '' '' ''End If
         '
