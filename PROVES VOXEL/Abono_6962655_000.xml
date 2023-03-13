@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Transaction xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <GeneralData Ref="6962655" Type="FacturaAbono" Date="2007-09-28" Currency="EUR" />
+  <Supplier CIF="A17105933" Company="COMERCIAL CBG S.A." Address="Polígono Industrial &quot;Mas d'en Bosch&quot;&#xD;17500 RIPOLL&#xD;Girona" City="RIPOLL" PC="17500" Province="Girona" Country="ESP" />
+  <Client SupplierClientID="" SupplierCustomerID="" CIF="A58227877" Company="CATALONIA DUQUES DE BERGARA, S.A." Address="C/BERGARA, 11" City="BARCELONA" PC="08002" Province="Barcelona" Country="ESP" />
+  <Customers>
+    <Customer SupplierClientID="C002854" SupplierCustomerID="" Customer="CATALONIA DUQUES DE BERGARA" Address="C/BERGARA, 11" City="BARCELONA" PC="08002" Province="Barcelona" Country="ESP" />
+  </Customers>
+  <References>
+    <Reference DNRef="6962655" PORef="" InvoiceRef="333" />
+  </References>
+  <ProductList>
+    <Product SupplierSKU="9702" Item="DTOS PDTES  A CLIENTES IVA 2" Qty="6.000" MU="" Total="1.91" UP="0.318">
+      <Taxes>
+        <Tax Type="IVA" Rate="7.000" Amount="0.134" />
+      </Taxes>
+      <Discounts>
+        <Discount Qualifier="Descuento" Type="Descuento comercial" Amount="0.00" />
+      </Discounts>
+    </Product>
+    <Product SupplierSKU="9702" Item="DTOS PDTES  A CLIENTES IVA 2" Qty="6.000" MU="" Total="2.08" UP="0.347">
+      <Taxes>
+        <Tax Type="IVA" Rate="7.000" Amount="0.146" />
+      </Taxes>
+      <Discounts>
+        <Discount Qualifier="Descuento" Type="Descuento comercial" Amount="0.00" />
+      </Discounts>
+    </Product>
+    <Product SupplierSKU="9702" Item="DTOS PDTES  A CLIENTES IVA 2" Qty="3.000" MU="" Total="1.04" UP="0.348">
+      <Taxes>
+        <Tax Type="IVA" Rate="7.000" Amount="0.073" />
+      </Taxes>
+      <Discounts>
+        <Discount Qualifier="Descuento" Type="Descuento comercial" Amount="0.00" />
+      </Discounts>
+    </Product>
+  </ProductList>
+  <TaxSummary>
+    <Tax Type="IVA" Rate="7.000" Base="5.030" Amount="0.352" />
+  </TaxSummary>
+  <TotalSummary SubTotal="5.030" Tax="0.350" Total="5.380">
+  </TotalSummary>
+</Transaction>

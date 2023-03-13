@@ -1,0 +1,29 @@
+Imports System.Reflection
+Imports System.Xml
+Imports System.Windows.Forms
+Imports System.Collections
+Imports System.Net   
+   
+
+
+   Dim oXml As XmlDocument = Nothing
+   Dim oItem As System.Xml.XmlNodeList = Nothing
+
+   Private Function ObtenerXML(ByVal sFileName As String) As XmlDocument
+        Dim oXMLDocument As XmlDocument = New XmlDocument
+        oXMLDocument.LoadXml(GetEmbeddedResource(Me.GetType, sFileName))
+        'SetFormPosition(oXMLDocument)
+        Return oXMLDocument
+   End Function
+
+
+   oXml = ObtenerXML("FacturaVoxel.xml")
+
+   oItem = oXml.SelectNodes("//GeneralData")
+
+   oItem = oXml.SelectNodes("//Client")
+   oItem.Item(0).Attributes("SupplierClientID").InnerText = xSecundari
+
+
+    oXml.Save(sFichero)
+   oXml.Save(sFicheroD)

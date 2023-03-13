@@ -1,0 +1,123 @@
+    Public Shared Function GetEmbeddedResource(ByVal p_objTypeForNameSpace As Type, ByVal p_strScriptFileName As String) As String
+
+        Dim s As StringBuilder = New StringBuilder
+
+        Dim ass As [Assembly] = [Assembly].GetAssembly(p_objTypeForNameSpace)
+        Dim sr As StreamReader
+
+        sr = New StreamReader(ass.GetManifestResourceStream(p_objTypeForNameSpace, p_strScriptFileName))
+        s.Append(sr.ReadToEnd())
+
+        Return s.ToString()
+
+    End Function
+
+
+    Private Function ObtenerXML(ByVal sFileName As String) As XmlDocument
+
+        Dim oXMLDocument As XmlDocument = New XmlDocument
+
+        oXMLDocument.LoadXml(SEI_Resources.GetEmbeddedResource(Me.GetType, sFileName))
+
+        'SetFormPosition(oXMLDocument)
+        Return oXMLDocument
+
+    End Function
+
+
+
+                oXml = ObtenerXML("XMLCaser_I.xml")
+
+                oItem = oXml.SelectNodes("//MENSAJE")
+                oItem.Item(0).Attributes("TIPO").InnerText = "recepcion"
+                oItem.Item(0).Attributes("VERSION").InnerText = "1.0"
+                oItem.Item(0).Attributes("ID").InnerText = sID
+                oItem.Item(0).Attributes("NAME").InnerText = "Recepcion" & sAsunto
+
+                oItem = oXml.SelectNodes("//ID_COMPANNIA")
+                oItem.Item(0).InnerText = sID_Compannia '"0001"
+
+                oItem = oXml.SelectNodes("//ID_RAMO")
+                oItem.Item(0).InnerText = sID_Ramo '"30"
+
+                oItem = oXml.SelectNodes("//ANNO")
+                oItem.Item(0).InnerText = sID_Anno ' Now.Year.ToString
+
+                oItem = oXml.SelectNodes("//ID_EXPEDIENTE")
+                oItem.Item(0).InnerText = sID_EXPEDIENTE
+
+                oItem = oXml.SelectNodes("//ID_INTERVINIENTE")
+                oItem.Item(0).InnerText = "249186567"  ' Nº de Proveedor de Servicasa para Caser
+
+                oItem = oXml.SelectNodes("//INFO")
+                oItem.Item(0).InnerText = oRcs.Fields.Item("U_SEIcomen").Value.ToString.Trim
+                '
+                sPath = Application.StartupPath() & "\"
+                sFichero = sPath & sAsunto.Trim & "_" & sSiniestroCompania.Replace("/", "_").Trim & ".xml"
+
+                oXml.Save(sFichero)
+
+
+
+    Private Sub XML_Linea(ByRef oXML As Xml.XmlDocument, _
+                          ByRef oRcs As SAPbobsCOM.Recordset, _
+                          ByRef iFila As Integer)
+        '
+        Dim oItem As Xml.XmlNodeList
+        Dim oDocumentLines As Xml.XmlNode
+        Dim oFirstRow As Xml.XmlNode
+        Dim oNewRow As Xml.XmlNode
+        '
+        If iFila > 0 Then
+            'Lineas Documento (Pedido de  Ventas)
+            oDocumentLines = oXML.SelectSingleNode("//Invoices/Invoice/Items")
+
+            'get the first row 
+            oFirstRow = oDocumentLines.FirstChild
+
+            'copy the first row the th new one -> for getting the same structure
+            oNewRow = oFirstRow.CloneNode(True)
+
+            'add the new row to the DocumentLines object
+            oDocumentLines.AppendChild(oNewRow)
+
+        End If
+        '
+        'Items
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/IssuerTransactionReference")
+        oItem.Item(iFila).InnerText = oRcs.Fields.Item("U_SEIcode2").Value ' Codigo Concepto CASER
+
+        'Descripción Concepto
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/ItemDescription")
+        oItem.Item(iFila).InnerText = Mid(oRcs.Fields.Item("LineText").Value, 1, 2500)
+
+        'ls = ls & " T2.U_SEIpre_b, "                       ' Precio Baremo
+        'ls = ls & " T2.U_SEIcan_b"                         ' Cantidad Baremo
+
+        'Cantidad
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/Quantity")
+        oItem.Item(iFila).InnerText = String.Format("{0:0}", oRcs.Fields.Item("Quantity").Value).Replace(",", ".")
+
+        'Importe Valoracion
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/UnitPriceWithoutTax")
+        oItem.Item(iFila).InnerText = String.Format("{0:0.000000}", oRcs.Fields.Item("Price").Value).Replace(",", ".")
+        'Total Linea sin Impuestos
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/TotalCost")
+        oItem.Item(iFila).InnerText = String.Format("{0:0.00}", oRcs.Fields.Item("LineTotal").Value).Replace(",", ".")
+        '
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/GrossAmount")
+        oItem.Item(iFila).InnerText = String.Format("{0:0.00}", oRcs.Fields.Item("LineTotal").Value).Replace(",", ".")
+        ' 
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/TaxesOutputs/Tax/TaxTypeCode")
+        oItem.Item(iFila).InnerText = "01"  ' Clase de Impuesto. Concepto Fiscal por el que se tributa
+        ' Iva al 16%  o 7% 
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/TaxesOutputs/Tax/TaxRate")
+        oItem.Item(iFila).InnerText = String.Format("{0:0.00}", oRcs.Fields.Item("VatPrcnt").Value).Replace(",", ".")  '  
+        ' Base Imponible Linea IVA
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/TaxesOutputs/Tax/TaxableBase/TotalAmount")
+        oItem.Item(iFila).InnerText = String.Format("{0:0.00}", oRcs.Fields.Item("LineTotal").Value).Replace(",", ".")
+        ' Importe  Linea IVA
+        oItem = oXML.SelectNodes("//Invoices/Invoice/Items/InvoiceLine/TaxesOutputs/Tax/TaxAmount/TotalAmount")
+        oItem.Item(iFila).InnerText = String.Format("{0:0.00}", oRcs.Fields.Item("ImporteIVA").Value).Replace(",", ".")  ' 
+
+    End Sub

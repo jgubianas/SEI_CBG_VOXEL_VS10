@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Transaction xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <GeneralData Ref="6962654" Type="FacturaAbono" Date="2007-09-28" Currency="EUR" />
+  <Supplier CIF="A17105933" Company="COMERCIAL CBG S.A." Address="Polígono Industrial &quot;Mas d'en Bosch&quot;&#xD;17500 RIPOLL&#xD;Girona" City="RIPOLL" PC="17500" Province="Girona" Country="ESP" />
+  <Client SupplierClientID="" SupplierCustomerID="" CIF="A58227877" Company="CATALONIA DUQUES DE BERGARA, S.A." Address="C/BERGARA, 11" City="BARCELONA" PC="08002" Province="Barcelona" Country="ESP" />
+  <Customers>
+    <Customer SupplierClientID="C002854" SupplierCustomerID="" Customer="CATALONIA DUQUES DE BERGARA" Address="C/BERGARA, 11" City="BARCELONA" PC="08002" Province="Barcelona" Country="ESP" />
+  </Customers>
+  <References>
+    <Reference DNRef="6962654" PORef="" InvoiceRef="333" />
+  </References>
+  <ProductList>
+    <Product SupplierSKU="9703" Item="DTOS PDTES  A CLIENTES IVA 3" Qty="12.000" MU="" Total="1.54" UP="0.128">
+      <Taxes>
+        <Tax Type="IVA" Rate="4.000" Amount="0.062" />
+      </Taxes>
+      <Discounts>
+        <Discount Qualifier="Descuento" Type="Descuento comercial" Amount="0.00" />
+      </Discounts>
+    </Product>
+    <Product SupplierSKU="9702" Item="DTOS PDTES  A CLIENTES IVA 2" Qty="24.000" MU="" Total="5.35" UP="0.223">
+      <Taxes>
+        <Tax Type="IVA" Rate="7.000" Amount="0.375" />
+      </Taxes>
+      <Discounts>
+        <Discount Qualifier="Descuento" Type="Descuento comercial" Amount="0.00" />
+      </Discounts>
+    </Product>
+    <Product SupplierSKU="9703" Item="DTOS PDTES  A CLIENTES IVA 3" Qty="1.054" MU="" Total="1.07" UP="1.015">
+      <Taxes>
+        <Tax Type="IVA" Rate="4.000" Amount="0.043" />
+      </Taxes>
+      <Discounts>
+        <Discount Qualifier="Descuento" Type="Descuento comercial" Amount="0.00" />
+      </Discounts>
+    </Product>
+    <Product SupplierSKU="9703" Item="DTOS PDTES  A CLIENTES IVA 3" Qty="2.550" MU="" Total="1.16" UP="0.456">
+      <Taxes>
+        <Tax Type="IVA" Rate="4.000" Amount="0.046" />
+      </Taxes>
+      <Discounts>
+        <Discount Qualifier="Descuento" Type="Descuento comercial" Amount="0.00" />
+      </Discounts>
+    </Product>
+  </ProductList>
+  <TaxSummary>
+    <Tax Type="IVA" Rate="4.000" Base="3.770" Amount="0.151" />
+    <Tax Type="IVA" Rate="7.000" Base="5.350" Amount="0.375" />
+  </TaxSummary>
+  <TotalSummary SubTotal="9.120" Tax="0.520" Total="9.640">
+  </TotalSummary>
+</Transaction>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Transaction xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <GeneralData Ref="1000484" Type="FacturaAbono" Date="2006-05-05" Currency="EUR" />
+  <Supplier CIF="A17105933" Company="COMERCIAL CBG S.A." Address="Polígono Industrial &quot;Mas d'en Bosch&quot;&#xD;17500 RIPOLL&#xD;Girona" City="RIPOLL" PC="17500" Province="Girona" Country="ESP" />
+  <Client SupplierClientID="" SupplierCustomerID="" CIF="B07481740" Company="SES PLANES, S.L." Address="AVDA. JAUME III, 20" City="PALMA DE MALLORCA" PC="07015" Province="Baleares" Country="ESP" />
+  <Customers>
+    <Customer SupplierClientID="" SupplierCustomerID="" Customer="" Address="" City="" PC="" Province="" Country="" />
+  </Customers>
+  <References>
+    <Reference DNRef="1000484" PORef="6000193,01" />
+  </References>
+  <ProductList>
+    <Product SupplierSKU="CBG999" Item="Articulo de Traspaso" Qty="1.000000" MU="" Total="56.82" UP="56.820000">
+      <Taxes>
+        <Tax Type="IVA" Rate="0.000000" Amount="0.000000" />
+      </Taxes>
+      <Discounts>
+        <Discount Qualifier="Descuento" Type="Descuento comercial" Amount="0.00" />
+      </Discounts>
+    </Product>
+  </ProductList>
+  <TaxSummary>
+    <Tax Type="IVA" Rate="0.000000" Base="56.820000" Amount="0.000000" />
+  </TaxSummary>
+  <TotalSummary SubTotal="56.820000" Tax="0.000000" Total="56.820000">
+  </TotalSummary>
+</Transaction>
