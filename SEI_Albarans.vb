@@ -623,10 +623,19 @@ Public Class SEI_Albarans
 
     '
     Private Function donaImpost(ByVal VatGroup As String) As String
+
+        If VatGroup.Contains("IGIC") Then
+            Return "IGIC"
+        End If
+        If VatGroup.Contains("IVA") Then
+            Return "IVA"
+        End If
+
         Select Case VatGroup
+
             Case Is = "R0", "R0TR", "R1", "R2", "R3", "RA", "SI0", "SI1", "SI2", "SI3", "I0", "I1", "I2", "I3", "IBI0", "IBI1", "IBI2", "IBI3", "ND0", "ND1", "ND2", "ND3"
                 Return "IVA"
-            Case Is = "RIGIC0", "RIGIC1", "RIGIC13", "RIGIC2", "RIGIC5", "SIGIC0", "SIGIC13", "SIGIC2", "SIGIC5"
+            Case Is = "RIGIC0", "RIGIC1", "RIGIC13", "RIGIC2", "RIGIC5", "SIGIC0", "SIGIC13", "SIGIC2", "SIGIC5", "RIGIC7", "RIGIC6"
                 Return "IGIC"
             Case Else
                 Return "IVA"

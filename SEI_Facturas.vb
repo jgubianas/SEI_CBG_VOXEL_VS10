@@ -554,9 +554,11 @@ Public Class SEI_Facturas
         ls = ls & " ON T0.CardCode= T1.CardCode "
         ls = ls & " LEFT OUTER JOIN OCTG T2"
         ls = ls & " ON T0.GroupNum= T2.GroupNum "
-
         ls = ls & " WHERE T1.QryGroup41 = 'Y' "         ' Cliente con Flag Facturas VOXEL
         ls = ls & " AND ISNULL(T0.U_SEIFiVox,'')=''"    ' Factura no exportada a Voxel   
+
+        ''''''''''''''''TREUREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEe
+        ''' ls = ls & " and  (T0.docentry = '959262' or T0.docentry = '959262') "
         '
         Try
             ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -588,7 +590,6 @@ Public Class SEI_Facturas
                 If oRecordset.Fields.Item("DocCur").Value.ToString <> "EUR" And oRecordset.Fields.Item("DocCur").Value.ToString <> "" Then
                     oItem.Item(0).Attributes("Currency").InnerText = oRecordset.Fields.Item("DocCur").Value.ToString
                 End If
-
 
                 oItem = oXml.SelectNodes("//Supplier")
                 oItem.Item(0).Attributes("CIF").InnerText = xCIF
@@ -692,11 +693,11 @@ Public Class SEI_Facturas
 
                 ls = ""
                 If esAngrup Then
-                    ls = ls & "  select  baseref, baseentry , t2.U_SEINUMPE, t2.DocDate   FROM  OINV T0 "
+                    ls = ls & "  select  baseref, t1.baseentry , t2.U_SEINUMPE, t2.DocDate   FROM  OINV T0 "
                     ls = ls & "  INNER JOIN  INV1 T1  ON T0.DocEntry=T1.DocEntry  "
                     ls = ls & "  left join ODLN t2 on T1.BaseEntry = t2.docentry "
                     ls = ls & "   where(T0.DocEntry = " & oRecordset.Fields.Item("DocEntry").Value.ToString & ")" '''oDataReader("DocEntry").ToString
-                    ls = ls & "  group by baseref, baseentry, t2.U_SEINUMPE, t2.DocDate  "
+                    ls = ls & "  group by baseref, t1.baseentry, t2.U_SEINUMPE, t2.DocDate  "
                 Else
                     '' ls = ls & "  select top 1 baseref  FROM  OINV T0 "
                     ''' tret el top 1 perquè retorni tots els albrans.
@@ -1031,10 +1032,18 @@ Public Class SEI_Facturas
 
     '
     Private Function donaImpost(ByVal VatGroup As String) As String
+
+        If VatGroup.Contains("IGIC") Then
+            Return "IGIC"
+        End If
+        If VatGroup.Contains("IVA") Then
+            Return "IVA"
+        End If
         Select Case VatGroup
+
             Case Is = "R0", "R0TR", "R1", "R2", "R3", "RA", "SI0", "SI1", "SI2", "SI3", "I0", "I1", "I2", "I3", "IBI0", "IBI1", "IBI2", "IBI3", "ND0", "ND1", "ND2", "ND3"
                 Return "IVA"
-            Case Is = "RIGIC0", "RIGIC1", "RIGIC13", "RIGIC2", "RIGIC5", "SIGIC0", "SIGIC13", "SIGIC2", "SIGIC5"
+            Case Is = "RIGIC0", "RIGIC1", "RIGIC13", "RIGIC2", "RIGIC5", "SIGIC0", "SIGIC13", "SIGIC2", "SIGIC5", "RIGIC3", "RIGIC6", "RIGIC7"
                 Return "IGIC"
             Case Else
                 Return "IVA"
@@ -1167,8 +1176,8 @@ Public Class SEI_Facturas
     End Function
 
 
-    Private Sub XML_Linea(ByRef oXML As Xml.XmlDocument, _
-                          ByRef oRcs As SqlClient.SqlDataReader, _
+    Private Sub XML_Linea(ByRef oXML As Xml.XmlDocument,
+                          ByRef oRcs As SqlClient.SqlDataReader,
                           ByRef iFila As Integer, ByVal esHotelsCatalonia As Boolean)
         '
         Dim oItem As Xml.XmlNodeList
@@ -1218,9 +1227,12 @@ Public Class SEI_Facturas
         ''' If Convert.ToDouble(oRcs("VatSum").ToString) <> 0 Then
         oItem = oXML.SelectNodes("//ProductList/Product/Taxes/Tax")
         If Not esHotelsCatalonia Then
+            oItem.Item(iFila).Attributes("Type").InnerText = donaImpost(oRcs("VatGroup")).ToString
+
             oItem.Item(iFila).Attributes("Amount").InnerText = oRcs("VatSum").ToString.Replace(",", ".")
             oItem.Item(iFila).Attributes("Rate").InnerText = oRcs("rate").ToString.Replace(",", ".")
         Else
+            oItem.Item(iFila).Attributes("Type").InnerText = donaImpost(oRcs("VatGroup")).ToString
             oItem.Item(iFila).Attributes("Amount").InnerText = String.Format("{0:0.000}", oRcs("VatSum")).ToString.Replace(",", ".")
             oItem.Item(iFila).Attributes("Rate").InnerText = String.Format("{0:0.000}", oRcs("rate")).ToString.Replace(",", ".")
         End If

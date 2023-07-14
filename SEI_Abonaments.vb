@@ -24,7 +24,6 @@ Imports Microsoft.VisualBasic
 
 
 
-
 Public Class SEI_Abonaments
 
     Private Form As SEI_SRV_VOXEL
@@ -129,7 +128,12 @@ Public Class SEI_Abonaments
         ls = ls & " LEFT OUTER JOIN OCTG T2"
         ls = ls & " ON T0.GroupNum= T2.GroupNum "
         ls = ls & " WHERE T1.QryGroup41 = 'Y' "         ' Cliente con Flag Facturas VOXEL
+
         ls = ls & " AND ISNULL(T0.U_SEIFiVox,'')='' and  isnull(t0.U_SEIFactVox, '') <> ''  " ' Factura no exportada a Voxel   
+
+        ''''''''''''''''TREUREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEe
+        ''''' ls = ls & " and  (T0.docentry = '54389' or T0.docentry = '54389') "
+        '
 
         Try
             ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -352,6 +356,8 @@ Public Class SEI_Abonaments
                 ''''''' 
                 oXml.Save(sFichero)
                 oXml.Save(sFicheroD)
+
+
                 '''''
                 ls = ""
                 ls = ls & " update  ORIN  set  U_SEIFivox = '" & sFichero & "'where docentry  = " & oRecordset.Fields.Item("DocEntry").Value.ToString
@@ -400,11 +406,18 @@ Public Class SEI_Abonaments
     End Sub
     '
     Private Function donaImpost(ByVal VatGroup As String) As String
+        If VatGroup.Contains("IGIC") Then
+            Return "IGIC"
+        End If
+        If VatGroup.Contains("IVA") Then
+            Return "IVA"
+        End If
         Select Case VatGroup
             Case Is = "R0", "R0TR", "R1", "R2", "R3", "RA", "SI0", "SI1", "SI2", "SI3", "I0", "I1", "I2", "I3", "IBI0", "IBI1", "IBI2", "IBI3", "ND0", "ND1", "ND2", "ND3"
                 Return "IVA"
-            Case Is = "RIGIC0", "RIGIC1", "RIGIC13", "RIGIC2", "RIGIC5", "SIGIC0", "SIGIC13", "SIGIC2", "SIGIC5"
+            Case Is = "RIGIC0", "RIGIC1", "RIGIC13", "RIGIC2", "RIGIC5", "SIGIC0", "SIGIC13", "SIGIC2", "SIGIC5", "RIGIC7", "RIGIC6"
                 Return "IGIC"
+
             Case Else
                 Return "IVA"
         End Select
@@ -488,6 +501,7 @@ Public Class SEI_Abonaments
         ls = ls & " SELECT  T1.DocEntry, T1.LineNum,T2.CodeBars,T1.ItemCode ,"
         ls = ls & " T1.Dscription,T1.Quantity,T1.PriceBefDi,T1.Price,T1.VatGroup,T3.Rate,T1.VatSum,T1.LineTotal,"
         ls = ls & "  T1.DiscPrcnt  , T2.SalUnitMsr  "
+        ls = ls & "  , T1.VatGroup "
         ls = ls & " FROM  ORIN T0 INNER JOIN  RIN1 T1"
         ls = ls & " ON T0.DocEntry=T1.DocEntry"
         ls = ls & " INNER JOIN OITM T2"
@@ -589,9 +603,12 @@ Public Class SEI_Abonaments
         If Not esHotelsCatalonia Then
             oItem.Item(iFila).Attributes("Amount").InnerText = oRcs("VatSum").ToString.Replace(",", ".")
             oItem.Item(iFila).Attributes("Rate").InnerText = oRcs("rate").ToString.Replace(",", ".")
+
+            oItem.Item(iFila).Attributes("Type").InnerText = donaImpost(oRcs("VatGroup").ToString.Replace(",", "."))
         Else
             oItem.Item(iFila).Attributes("Amount").InnerText = String.Format("{0:0.000}", oRcs("VatSum")).ToString.Replace(",", ".")
             oItem.Item(iFila).Attributes("Rate").InnerText = String.Format("{0:0.000}", oRcs("rate")).ToString.Replace(",", ".")
+            oItem.Item(iFila).Attributes("Type").InnerText = donaImpost(oRcs("VatGroup").ToString.Replace(",", "."))
         End If
         ''' End If
     End Sub
