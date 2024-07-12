@@ -46,6 +46,7 @@ Public Class SEI_Abonaments
         Dim oSqlcomand As SqlCommand
         Dim oDataReader As SqlClient.SqlDataReader = Nothing
         Dim oDataReader2 As SqlClient.SqlDataReader = Nothing
+        Dim oDataReader4 As SqlClient.SqlDataReader = Nothing
         Dim oRcsFactLin As SqlClient.SqlDataReader = Nothing
         Dim oXml As XmlDocument = Nothing
         Dim oItem As System.Xml.XmlNodeList = Nothing
@@ -54,6 +55,7 @@ Public Class SEI_Abonaments
         Dim numSerie As String = "0"
         Dim iFila As Integer
         Dim go_conn3 As SqlConnection = Nothing
+        Dim go_conn4 As SqlConnection = Nothing
         Dim HashFEnviats As Hashtable = New Hashtable
         Dim HashResumIVAS As Hashtable = New Hashtable
         Dim Conn1, conn2 As New ADODB.Connection
@@ -119,14 +121,23 @@ Public Class SEI_Abonaments
         ls = ls & " T0.Comments,"                ' Observaciones
         ls = ls & " T1.MailAddres, T1.MailCity, T1.MailZipCod, isnull(T0.NumAtCard,'') as NumAtCard   "              ' PO Quien emite EDI es el "DESTINATARIO" de la factura
         ls = ls & ", T1.CardFName as NomExtranger, t0.shiptocode  "
-        ls = ls & ", isnull(T1.U_SEIgrcli,'') as U_SEIgrcli, isnull(U_SEINUMPE,'') as U_SEINUMPE, "
+        ls = ls & ", isnull(T1.U_SEIgrcli,'') as U_SEIgrcli, isnull(T0.U_SEINUMPE,'') as U_SEINUMPE, "
         ls = ls & " isnull(t0.U_SEIFactVox, '') as numFact "
-
+        ''' jgt 12/07/
+        'ls = ls & ", T3.DocDueDate "
+        '''fi  jgt 12/07/2024
         ls = ls & " FROM ORIN T0"
         ls = ls & " INNER JOIN OCRD T1"
         ls = ls & " ON T0.CardCode= T1.CardCode "
         ls = ls & " LEFT OUTER JOIN OCTG T2"
         ls = ls & " ON T0.GroupNum= T2.GroupNum "
+
+        ''' jgt 12/07/2024
+        'ls = ls & " LEFT OUTER JOIN OINV T4 on T4.DocNum = isnull(t0.U_SEIFactVox, '') "
+        'ls = ls & " LEFT OUTER JOIN ODLN T3 on T3.DocNum = isnull(t0.U_SEIFactVox, '') "
+        ''' fi jgt 12/07/2024
+
+
         ls = ls & " WHERE T1.QryGroup41 = 'Y' "         ' Cliente con Flag Facturas VOXEL
 
         ls = ls & " AND ISNULL(T0.U_SEIFiVox,'')='' and  isnull(t0.U_SEIFactVox, '') <> ''  " ' Factura no exportada a Voxel   
@@ -254,6 +265,9 @@ Public Class SEI_Abonaments
                 ls = ""
                 ls = ls & "  select top 1 baseref  FROM  ORIN T0 "
                 ls = ls & "  INNER JOIN  RIN1 T1  ON T0.DocEntry=T1.DocEntry  "
+                ''''''
+                'ls = ls & "  left JOIN  ODLN T2  ON T2.DocEntry=T1.BaseEntry and t1.basetype = 15 "
+                '''''
                 ls = ls & "   where(T0.DocEntry = " & oRecordset.Fields.Item("DocEntry").Value.ToString & ")" '''oDataReader("DocEntry").ToString
                 ls = ls & "  group by baseref,NumAtCard "
                 ''' fi aquí de mirar les referències
@@ -289,6 +303,36 @@ Public Class SEI_Abonaments
                         '' aquí haig de demanar el cas que hi hagi base ref si s'ha de posar aquí. en comptes del numfact.
                     End If
                     ''
+
+                    ''''' afegit 12/07/2024
+                    ls = ""
+                    ls = ls & "  select top 1 T3.DocDueDate  FROM  OINV T0 "
+                    ls = ls & "  INNER JOIN  INV1 T1  ON T0.DocEntry=T1.DocEntry  and T1.BaseType = 15 "
+                    ls = ls & "  INNER JOIN  DLN1 T2 on T2.DocEntry= t1.BaseEntry  and T2.LineNum = T1.BaseLine "
+                    ls = ls & "  INNER JOIN  ODLN T3 on T3.DocEntry= t2.DocEntry "
+                    ls = ls & "   where(T0.DocNum = '" & oRecordset.Fields.Item("numFact").Value.ToString & "')"
+                    SEI_SRV_VOXEL.ConectarSQLNative(go_conn4)
+                    oSqlcomand = New SqlCommand(ls, go_conn4)
+                    oDataReader4 = oSqlcomand.ExecuteReader()
+                    While oDataReader4.Read()
+
+
+
+                        If IsDate(oDataReader4("DocDueDate").ToString) Then
+
+                            If Year(oDataReader4("DocDueDate").ToString) > 2000 Then
+                                oItem.Item(xLinia).Attributes("DNRefDate").InnerText = Convert.ToDateTime(oDataReader4("DocDueDate").ToString).ToString("yyyy-MM-dd") ''   oRecordset.Fields.Item("DocDueDate").Value.ToString
+                            End If
+
+                        End If
+
+                    End While
+                    go_conn4.Close()
+                    oDataReader4 = Nothing
+                    go_conn4 = Nothing
+                    ''''' fi afegit 12/07/2024
+                    '''
+
                     xLinia = xLinia + 1
                     ''
                 End While

@@ -11,7 +11,7 @@
 		Country="" />
 	</Customers>
 	<References>
-	<Reference DNRef="" PORef="" InvoiceRef="" />
+	<Reference DNRef="" PORef="" InvoiceRef="" DNRefDate="" />
 	</References>
 	<ProductList>
 		<Product SupplierSKU=""   Item="" Qty="" MU="" Total=""  UP="">

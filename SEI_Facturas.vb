@@ -558,7 +558,7 @@ Public Class SEI_Facturas
         ls = ls & " AND ISNULL(T0.U_SEIFiVox,'')=''"    ' Factura no exportada a Voxel   
 
         ''''''''''''''''TREUREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEe
-        ''' ls = ls & " and  (T0.docentry = '959262' or T0.docentry = '959262') "
+        'ls = ls & " and  (T0.docentry = '1033574' or T0.docentry = '1033574') "
         '
         Try
             ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
